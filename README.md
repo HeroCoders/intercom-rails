@@ -4,7 +4,7 @@ The easiest way to install Intercom in a rails app.
 
 For interacting with the Intercom REST API, use the `intercom` gem (https://github.com/intercom/intercom-ruby)
 
-Requires ruby 2.0 or higher for `intercom-rails  >= 4.0`
+Requires Ruby 2.0 or higher.
 
 ## Installation
 Add this to your Gemfile:
@@ -55,22 +55,23 @@ If your users can be defined in different ways in your app you can also pass an 
 ```ruby
   config.user.current = [Proc.new { current_user_object }, Proc.new { @user_object }]
 ```
-* If you want the Intercom Messenger to be available when there is no current user,  set `config.include_for_logged_out_users = true` in your config and sign up for the [Respond](https://www.intercom.io/live-chat) package.
+* If you want the Intercom Messenger to be available when there is no current user,  set `config.include_for_logged_out_users = true` in your config and sign up for the [Inbox](https://www.intercom.io/live-chat) package.
 
 Feel free to mail us: team@intercom.io, if you're still having trouble.
 
 ## Configuration
 
 ### API Secret
-If you want to use Identity Verification, ensure you set your API secret in `config/initializers/intercom.rb`:
+It is possible to enable Identity Verification for the Intercom Messenger and you can find the documentation in how to [here](https://developers.intercom.com/docs/enable-secure-mode-on-your-web-product). If you want to use this feature, ensure you set your Identity Verification Secret as the API secret in `config/initializers/intercom.rb`:
 
 ```ruby
   config.api_secret = '123456'
 ```
-**Note: This example is just for the sake of simplicity, you should never include your api secret in source control. Instead, you should use the Rails [secret config](http://guides.rubyonrails.org/4_1_release_notes.html#config-secrets-yml) feature.**
+**Note: This example is just for the sake of simplicity, you should never include this secret in source control. Instead, you should use the Rails [secret config](http://guides.rubyonrails.org/4_1_release_notes.html#config-secrets-yml) feature.**
+
 ### Shutdown
 
-If you use Intercom Respond combined with another product like Engage, any user that uses a shared computer and browser with someone else will be able to see the most recently logged in user’s conversation history until the cookie expires.
+If you use Intercom Inbox combined with another product like Messages, any user that uses a shared computer and browser with someone else will be able to see the most recently logged in user’s conversation history until the cookie expires.
 Because of this, it’s very important to properly shutdown Intercom when a user’s session on your app ends (via manually or automatically logging out).
 
 #### Using Devise
@@ -115,7 +116,7 @@ class VisitorsController < ApplicationController
 
   protected
   def intercom_shutdown
-    IntercomRails::ShutdownHelper.intercom_shutdown(session, cookies)
+    IntercomRails::ShutdownHelper.intercom_shutdown(session, cookies, request.domain)
   end
 end
 ```
@@ -125,7 +126,7 @@ end
 If you use another service than Devise or if you implemented your own authentication service, you can call the following method in a controller to shutdown Intercom on logout.
 
 ```ruby
-IntercomRails::ShutdownHelper::intercom_shutdown_helper(cookies)
+IntercomRails::ShutdownHelper::intercom_shutdown_helper(cookies, domain)
 ```
 
 **Be aware that if you call this method before a 'redirect_to' (quite common on logout) it will have no impact** as it is impossible to update cookies when you use a redirection.
