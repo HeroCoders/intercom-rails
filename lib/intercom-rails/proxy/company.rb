@@ -10,6 +10,7 @@ module IntercomRails
 
       config_delegator :plan
       config_delegator :monthly_spend
+      config_delegator :size
 
       def self.current_in_context(search_object)
         begin
