@@ -1,6 +1,6 @@
 module IntercomRails
   class Railtie < Rails::Railtie
-    initializer "intercom-rails" do |app|
+    initializer "intercom-rails", before: :load_config_initializers do
       ActiveSupport.on_load :action_view do
         include ScriptTagHelper
       end
